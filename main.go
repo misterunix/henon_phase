@@ -45,8 +45,10 @@ import (
 func main() {
 	fmt.Println("Starting Henon Phase")
 
-	width := 600
-	height := 600
+	width := 2000
+	height := 2000
+	x1 := float64(width / 2)
+	y1 := float64(height / 2)
 
 	ibuf0 := gd.CreateTrueColor(width, height)
 
@@ -56,38 +58,55 @@ func main() {
 	*/
 
 	// Initialize the Henon Phase
-	var xn float64 = 1.0
-	var yn float64 = 1.0
+	var xn float64 = .01
+	var yn float64 = .01
 	var a float64 = -10.0
 
 	bkground := ibuf0.ColorAllocateAlpha(0x00, 0x00, 0x00, 0)
 	white := ibuf0.ColorAllocateAlpha(0xFF, 0xFF, 0xFF, 70)
 	ibuf0.FilledRectangle(0, 0, width, height, bkground)
 
-	ibuf0.SetPixel(0, 0, white)
+	//ibuf0.SetPixel(0, 0, white)
 
-	// Iterate through the Henon Phase
-	for i := 0; i < 100000; i++ {
-		xtmp := xn*math.Cos(a) - (yn-xn*xn)*math.Sin(a)
-		ytmp := xn*math.Sin(a) + (yn-xn*xn)*math.Cos(a)
+	//total := 1000 * 1000 * 1000
+	//var running int
 
-		xn = xtmp
-		yn = ytmp
+	for k := 0; k < 100; k++ {
+		for j := 0; j < 1000; j++ {
+			// Iterate through the Henon Phase
+			for i := 0; i < 1000; i++ {
+				xtmp := xn*math.Cos(a) - (yn-(xn*xn))*math.Sin(a)
+				ytmp := xn*math.Sin(a) + (yn-(xn*xn))*math.Cos(a)
 
-		// Map the Henon Phase to the screen
-		x1 := float64(width / 2)
-		y1 := float64(height / 2)
+				xn = xtmp
+				yn = ytmp
 
-		x := int((xn*.5)*x1) + width/2
-		y := int((yn*.5)*y1) + height/2
+				// Map the Henon Phase to the screen
 
-		//	x := int((xn*float64(width/2) + float64(width/2)) * 0.1)
-		//		y := int((yn*float64(height/2) + float64(height/2)) * 0.1)
+				x := int((xn*.5)*x1) + width/2
+				y := int((yn*.5)*y1) + height/2
 
-		ibuf0.SetPixel(x, y, white)
+				//	x := int((xn*float64(width/2) + float64(width/2)) * 0.1)
+				//		y := int((yn*float64(height/2) + float64(height/2)) * 0.1)
+
+				ibuf0.SetPixel(x, y, white)
+				//running++
+				//if running%1000 == 0 {
+				//	r := float64(running) / float64(total)
+				//	fmt.Printf("\r%f", r)
+				//}
+			}
+			xn += .05
+			yn += .05
+			//ibuf0.Png("test.png")
+		}
+		xn += float64(k) * 0.02
+		yn += float64(k) * 0.02
+		filename := fmt.Sprintf("images/%04d.png", k)
+		ibuf0.Png(filename)
 
 	}
-
+	fmt.Println("\nDone")
 	// Save the Henon Phase
 	ibuf0.Png("test.png")
 
