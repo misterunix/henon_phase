@@ -40,13 +40,14 @@ import (
 	"math"
 
 	gd "github.com/misterunix/cgo-gd"
+	"github.com/misterunix/colorworks/hsl"
 )
 
 func main() {
 	fmt.Println("Starting Henon Phase")
 
-	width := 2000
-	height := 2000
+	width := 4000
+	height := 4000
 	x1 := float64(width / 2)
 	y1 := float64(height / 2)
 
@@ -63,7 +64,7 @@ func main() {
 	var a float64 = -10.0
 
 	bkground := ibuf0.ColorAllocateAlpha(0x00, 0x00, 0x00, 0)
-	white := ibuf0.ColorAllocateAlpha(0xFF, 0xFF, 0xFF, 70)
+	//white := ibuf0.ColorAllocateAlpha(0xFF, 0xFF, 0xFF, 70)
 	ibuf0.FilledRectangle(0, 0, width, height, bkground)
 
 	//ibuf0.SetPixel(0, 0, white)
@@ -88,8 +89,9 @@ func main() {
 
 				//	x := int((xn*float64(width/2) + float64(width/2)) * 0.1)
 				//		y := int((yn*float64(height/2) + float64(height/2)) * 0.1)
-
-				ibuf0.SetPixel(x, y, white)
+				r, g, b := hsl.HSLtoRGB((float64(i)/1000.0)*360.0, 1.0, 0.9)
+				tc := ibuf0.ColorAllocateAlpha(int(r), int(g), int(b), 100)
+				ibuf0.SetPixel(x, y, tc)
 				//running++
 				//if running%1000 == 0 {
 				//	r := float64(running) / float64(total)
